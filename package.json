@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Wojw99/covid-predictor-api#readme",
   "dependencies": {
+    "csv-parser": "^3.0.0",
     "express": "^4.17.1"
   }
 }
