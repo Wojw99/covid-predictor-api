@@ -24,7 +24,7 @@ async function readDataPredicted() {
             var listOfOutputs = [];
 
             // fill in the list of outputs
-            for (var j = 1; j < elements.length; j++) {
+            for (var j = 1; j < elements.length - 4; j++) {
                 listOfOutputs.push({
                     date: headers[j],
                     cases: elements[j],
@@ -36,8 +36,6 @@ async function readDataPredicted() {
                 outputs: listOfOutputs,
             });
         }
-
-        console.log(dataPredicted);
     });
 }
 
