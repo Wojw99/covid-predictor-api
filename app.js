@@ -4,12 +4,14 @@ const csv = require('csv-parser');
 const fs = require('fs');
 
 var dataPredicted = [];
+var dataReal = [];
 
-readDataPredicted();
+readData('data/data_predicted.csv', dataPredicted);
+readData('data/data.csv', dataReal);
 
 // read .csv file and fill in the dataPredicted list with data
-async function readDataPredicted() {
-    fs.readFile('data/data_predicted.csv', 'utf-8', (error, data) => {
+async function readData(path, dataArray) {
+    fs.readFile(path, 'utf-8', (error, data) => {
         if (error) {
             console.log(error);
             return;
@@ -24,22 +26,27 @@ async function readDataPredicted() {
             var listOfOutputs = [];
 
             // fill in the list of outputs
-            for (var j = 1; j < elements.length - 4; j++) {
-                listOfOutputs.push({
-                    date: headers[j],
-                    cases: elements[j],
-                });
+            for (var j = 3; j < elements.length - 2; j++) {
+                if (j == elements.length - 3) {
+                    listOfOutputs.push({
+                        date: headers[j].replace('\r', ''),
+                        cases: elements[j].replace('\r', ''),
+                    });
+                } else {
+                    listOfOutputs.push({
+                        date: headers[j],
+                        cases: elements[j],
+                    });
+                }
             }
 
-            dataPredicted.push({
+            dataArray.push({
                 region: region,
                 outputs: listOfOutputs,
             });
         }
     });
 }
-
-
 
 // - - - - - GET main route - - - - - */
 app.get('/', function (request, response) {
@@ -49,6 +56,11 @@ app.get('/', function (request, response) {
 // - - - - - GET for all predictions - - - - - */
 app.get('/api/predictions', function (request, response) {
     response.send(dataPredicted);
+});
+
+// - - - - - GET for all reals - - - - - */
+app.get('/api/reals', function (request, response) {
+    response.send(dataReal);
 });
 
 // - - - - - GET test predictions - - - - - */
