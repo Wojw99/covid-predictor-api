@@ -2,12 +2,27 @@ const express = require('express');
 const app = express();
 const csv = require('csv-parser');
 const fs = require('fs');
+const { spawn } = require('child_process');
 
 var dataPredicted = [];
 var dataReal = [];
 
 readData('data/data_predicted.csv', dataPredicted);
 readData('data/data.csv', dataReal);
+
+setTimeout(function () {
+    runPythonAndRead();
+}, 2400000); // 24 hours
+
+function runPythonAndRead() {
+    console.log('Script waiting...');
+    const python = spawn('python', ['script/test.py']);
+    python.on('close', function () {
+        console.log('Script completed!');
+        readData('data/data_predicted.csv', dataPredicted);
+        readData('data/data.csv', dataReal);
+    });
+}
 
 // read .csv file and fill in the dataPredicted list with data
 async function readData(path, dataArray) {
